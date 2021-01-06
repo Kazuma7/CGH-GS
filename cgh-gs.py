@@ -3,7 +3,7 @@
 import cv2
 import numpy as np
 
-hr = 150                                                                       #ターゲットパターン（ベタパターン）の縦方向サイズ
+hr = 150                                                                       
 wr = 150     
 
 def root_mean_squared_error(pred, true):                                       #RMSE評価関数
@@ -65,6 +65,7 @@ for num in range(iteration):
     phase = np.angle(u)
 
     holophase = np.where(phase < 0, phase + 2 * np.pi, phase)
+    #条件分岐 np.where(condition x y)
     p_max = np.max(phase)
     p_min = np.min(phase)
     holo = ((phase - p_min) / (p_max - p_min)) * 255
