@@ -1,2 +1,2 @@
-#CGH Gerchberg-Saxton algorithm
+# CGH Gerchberg-Saxton algorithm
  
