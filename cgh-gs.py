@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 #RMSE評価関数
@@ -45,9 +46,12 @@ def reconstruct(norm_int):
 
 
 
-target = cv2.imread("img/target1.bmp", 0)
+target = cv2.imread("img/target.bmp", 0)
 # cv2.imshow("target", target)
 # cv2.waitKey(0)
+
+uniformity = []                                                       
+rmse = [] 
 
 height, width = target.shape[:2]
 
@@ -73,12 +77,13 @@ for num in range(iteration):
     u_int = u_abs ** 2
     norm_int = normalization(u_int)
 
-    #再生像の元
-    norm_int = norm
-
+    #再生像を生成
     rec = reconstruct(norm_int)
-
     phase = np.angle(u)
+
+    #再生像の評価
+    mse = root_mean_squared_error(norm_int, target)
+    rmse.append(root_mean_squared_error(norm_int, target)) 
 
     #再生像の複素振幅をターゲットに合わせて修正
     u.real = target * np.cos(phase)
@@ -90,7 +95,6 @@ for num in range(iteration):
 
     #CGHの元を生成
     phase = np.angle(u)
-
     holo = hologram(phase)
 
     holo_name = "holo"
@@ -107,9 +111,32 @@ for num in range(iteration):
     # cv2.imshow("Reconstruction", rec)
     # cv2.waitKey(0)
 
-    mse = root_mean_squared_error(norm_int, target)
-    print(mse)
-    print(check_uniformity(u_int, target))
+    uni = check_uniformity(u_int, target)
+    uniformity.append(uni)
+
+    print('RMSE評価',mse)
+    print('均一性',check_uniformity(u_int, target))
+
+
+
+plt.figure(figsize=(5,4))
+plt.rcParams['font.size'] = 15 #フォントの大きさ
+plt.plot(np.arange(1,iteration+1),rmse, color="k")
+plt.xlabel("Iteration")
+plt.ylabel("RMSE")
+plt.tight_layout()
+plt.savefig('rmse.png')
+np.savetxt("rmse.csv", uniformity, delimiter=',', fmt='%f')
+
+plt.figure(figsize=(5,4))                                                     
+plt.rcParams['font.size'] = 15                                                
+plt.plot(np.arange(1,iteration+1),uniformity)                               
+plt.xlabel("Iteration")                                                       
+plt.ylabel("Uniformity")                                                      
+plt.ylim(0,1)                                                                
+plt.tight_layout()                                   
+plt.savefig('Uniformity.png')                                                 
+np.savetxt("uni.csv", uniformity, delimiter=',', fmt='%f')     
 
 
 
