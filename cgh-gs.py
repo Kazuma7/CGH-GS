@@ -55,7 +55,7 @@ def reconstruct(norm_int):
     return rec
 
 
-target = cv2.imread("img/target1.bmp", 0)
+target = cv2.imread("img/target.bmp", 0)
 # cv2.imshow("target", target)
 # cv2.waitKey(0)
 
